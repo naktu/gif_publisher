@@ -1,0 +1,1 @@
+from gifs.models import *
