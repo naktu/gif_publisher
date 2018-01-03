@@ -1,5 +1,9 @@
-import pytumblr
-from .models import *
+import requests
+import utils
+# This file store private setting in the current directory. For this project, it is api key.
+from settings import *
+
+
 
 
 def main():
@@ -8,5 +12,10 @@ def main():
     #TODO randome site for cheking
     #TODO add posts/tags/content to database
 
-if __name__ == '__main__':
-    main()
+    # client = pytumblr.TumblrRestClient(
+    #     consumer_key=key
+    # )
+    # print(client.tagged("anime_gif"))
+
+
+main()
