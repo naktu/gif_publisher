@@ -39,17 +39,22 @@ from django.db import models
 
 class Tag(models.Model):
     tag = models.TextField()
+    active = models.BooleanField()
+
+    def __str__(self):
+        return self.tag
 
 
 class Post(models.Model):
     tumblr_post_id = models.BigIntegerField()
     timestamp = models.IntegerField(null=False)
     json = models.TextField()
+    tagged = models.ManyToManyField(Tag)
 
 
-class Tagged(models.Model):
-    post = models.ForeignKey(Post)
-    tag = models.ForeignKey(Tag)
+# class Tagged(models.Model):
+#     post = models.ForeignKey(Post)
+#     tag = models.ForeignKey(Tag)
 
 
 class GifLink(models.Model):
