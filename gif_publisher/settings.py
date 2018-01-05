@@ -119,3 +119,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Secret sittings for gifs app
+try:
+    from .gifs_settings import *
+except:
+   pass
