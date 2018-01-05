@@ -5,16 +5,17 @@ import requests
 logging.getLogger(__name__).addHandler(logging.NullHandler)
 
 
-def get_page(url, timeout):
+def get_page(url, params):
     """
     :param url: url
     :param timeout: timeout
     :return: response if return code 200 or fail
     """
+
     result = {}
     exception_happened = True
     try:
-        resp = requests.get(url, timeout=timeout)
+        resp = requests.get(url, params=params)
     except Exception as e:
         logging.error('{}'.format(e))
     else:
