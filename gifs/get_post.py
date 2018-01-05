@@ -1,4 +1,4 @@
-import requests
+import pytumblr
 import utils
 import logging.config
 import os
@@ -6,10 +6,10 @@ import django
 import random
 import datetime
 
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gif_publisher.settings")
 django.setup()
-# This file store private setting in the current directory. For this project, it is api key.
-from settings import *
+
 from gifs.models import *
 
 
@@ -40,39 +40,38 @@ LOGGING = {
     },
 }
 
-T_API = 'https://api.tumblr.com/v2/'
+T_API  = 'https://api.tumblr.com/v2/'
+T_PATH = 'tagged'
 
 logging.config.dictConfig(LOGGING['logging'])
 logger = logging.getLogger(__name__)
 
 
 def main():
+    client = pytumblr.TumblrRestClient(consumer_key=django.conf.settings.KEY)
+    client = pytumblr.TumblrRestClient(consumer_key='123')
     active_tags = Tag.objects.filter(active=True)
     if not active_tags:
         logger.warning("Can't find any active tag")
     else:
         tag = random.choice(active_tags).tag
-        print(tag)
-        unix_time = Post.objects.filter(tagged__tag=tag)
-        if unix_time:
-            pass
+        posts = Post.objects.filter(tagged__tag=tag)
+        if posts:
+            timestamp = posts.order_by('timestamp').first().timestamp
+            logger.info('Timestamp for tag {0} = {1}'.format(tag, timestamp))
         else:
-            start_time = datetime.datetime.timestamp()
+            timestamp = round(datetime.datetime.utcnow().timestamp())
+            logger.info("Can't find any timestamp for tag {0}, take current timestamp {1}".format(tag, timestamp))
 
-
-    # tagged_url = "{}tagged"
-    # params = {
-    #     # 'key': key,
-    #
-    # }
-    #TODO select random (get old posts, get new posts)
-    #TODO randome site for cheking
-    #TODO add posts/tags/content to database
-
-    # client = pytumblr.TumblrRestClient(
-    #     consumer_key=key
-    # )
-    # print(client.tagged("anime_gif"))
-
+        try:
+            resp = client.tagged(tag, before=timestamp)
+        except Exception as e:
+            logger.error('{}'.format(e))
+        else:
+            print(len(resp))
+            print(type(resp))
+            print(resp)
+            for i in resp:
+                print(i)
 
 main()
