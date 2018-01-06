@@ -5,6 +5,7 @@ import django
 import random
 import datetime
 import sys
+import time
 
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gif_publisher.settings")
@@ -21,15 +22,22 @@ LOGGING = {
             }
         },
         'handlers': {
+            'file': {
+                'level': 'DEBUG',
+                'class': 'logging.FileHandler',
+                'formatter': 'standard',
+                'filename': 'gifs.logger.log'
+            },
             'stream': {
                 'level': 'DEBUG',
                 'class': 'logging.StreamHandler',
-                'formatter': 'standard'
+                'formatter': 'standard',
             },
+
         },
         'loggers': {
             '': {
-                'handlers': ['stream'],
+                'handlers': ['stream', 'file'],
                 'level': 'INFO'
             }
         }
@@ -59,6 +67,7 @@ def parse_response(resp):
                 data['tumblr_post_id'] = post.pop('id', None)
                 data['timestamp'] = post.pop('timestamp', None)
                 data['tags'] = post.pop('tags', None)
+                data['post_url'] = post.pop('post_url', None)
                 photos = post.pop('photos', None)
                 if photos:
                     data['gif_links'] = [image['original_size']['url'] for image in photos if image['original_size']['url'].endswith('.gif') ]
@@ -87,8 +96,9 @@ def main():
     if not active_tags:
         logger.warning("Can't find any active tag")
     else:
-        tag = random.choice(active_tags).tag
-        posts = Post.objects.filter(tagged__tag=tag)
+        tag = random.choice(active_tags)
+        tag_tag = tag.tag
+        posts = Post.objects.filter(tagged__tag=tag_tag)
         if posts:
             timestamp = posts.order_by('timestamp').first().timestamp
             logger.info('Timestamp for tag {0} = {1}'.format(tag, timestamp))
@@ -102,23 +112,45 @@ def main():
             sys.exit(1)
         for_db = parse_response(resp)
         if for_db['result'] == 'ok':
-            for row in for_db['data']:
-                post = Post(
-                    tumblr_post_id=row['tumblr_post_id'],
-                    timestamp=row['timestamp'],
-                    json=row['json']
-                )
-                post.save()
+            if for_db['data']:
+                for row in for_db['data']:
+                    post = Post(
+                        tumblr_post_id=row['tumblr_post_id'],
+                        timestamp=row['timestamp'],
+                        json=row['json'],
+                        tagged=tag,
+                        post_url=row['post_url']
+                    )
+                    post.save()
 
-                tags = []
-                for tag in row['tags']:
-                    new_tag = Tag(tag=tag)
-                    new_tag.save()
-                    tags.append(new_tag)
+                    tags = []
+                    for tag_value in row['tags']:
+                        new_tag = Tag(tag=tag_value.lower())
+                        try:
+                            new_tag.save()
+                            logger.info("Added new tag: {}".format(tag_value))
+                            # print("It's new tag: {}".format(tag_value))
+                        except:
+                            # print("It's tag in database: {}".format(tag_value))
+                            new_tag = Tag.objects.get(tag=tag_value.lower())
+                        tags.append(new_tag)
+
+                    for link in row['gif_links']:
+                        gif_object = Gif(
+                            link = link,
+                            post = post,
+                        )
+                        gif_object.save()
+                        for i in tags:
+                            gif_object.tagged.add(i)
+            else:
+                logger.info('Empty result I get {}'.format(resp))
         else:
             pass
 
 
 
-
-main()
+while True:
+    main()
+    logger.info('Sleep zzzzz')
+    time.sleep(60)
