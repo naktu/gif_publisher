@@ -38,7 +38,7 @@ from django.db import models
 
 
 class Tag(models.Model):
-    tag = models.TextField()
+    tag = models.TextField(unique=True)
     active = models.BooleanField()
 
     def __str__(self):
@@ -49,7 +49,7 @@ class Post(models.Model):
     tumblr_post_id = models.BigIntegerField()
     timestamp = models.IntegerField(null=False)
     json = models.TextField()
-    tagged = models.ManyToManyField(Tag)
+    tagged = models.ForeignKey(Tag)
 
 
 # class Tagged(models.Model):
@@ -60,3 +60,4 @@ class Post(models.Model):
 class GifLink(models.Model):
     link = models.URLField()
     post = models.ForeignKey(Post)
+    tagged = models.ManyToManyField(Tag)
