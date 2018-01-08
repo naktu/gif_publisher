@@ -140,7 +140,10 @@ def main():
                             link = link,
                             post = post,
                         )
-                        gif_object.save()
+                        try:
+                            gif_object.save()
+                        except:
+                            gif_object = Gif.objects.get(link=link)
                         for i in tags:
                             gif_object.tagged.add(i)
             else:
@@ -153,4 +156,4 @@ def main():
 while True:
     main()
     logger.info('Sleep zzzzz')
-    time.sleep(60)
+    time.sleep(5)
