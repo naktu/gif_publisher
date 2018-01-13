@@ -143,11 +143,24 @@ def main():
                         try:
                             gif_object.save()
                         except:
+                            logger.info("That's gif already in database: {}".format(link))
                             gif_object = Gif.objects.get(link=link)
                         for i in tags:
                             gif_object.tagged.add(i)
             else:
                 logger.info('Empty result I get {}'.format(resp))
+                print(timestamp)
+                timestamp -= 300
+                print(tag)
+                post = Post(
+                    tumblr_post_id=00000000,
+                    timestamp=timestamp,
+                    json="",
+                    tagged=tag,
+                    post_url='http://none.ru'
+                )
+                post.save()
+
         else:
             pass
 

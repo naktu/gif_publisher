@@ -66,6 +66,10 @@ class Post(models.Model):
     def __str__(self):
         return self.post_url
 
+class LastPostTimestamp(models.Model):
+    timestamp = models.IntegerField(null=False)
+    tagged = models.ForeignKey(Tag)
+
 
 # class Tagged(models.Model):
 #     post = models.ForeignKey(Post)
