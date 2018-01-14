@@ -55,7 +55,7 @@ logger = logging.getLogger(__name__)
 def parse_response(resp):
     if type(resp) is dict:
         return {
-            'status': 'fail',
+            'result': 'fail',
             'data': resp
         }
     elif type(resp) is list:
