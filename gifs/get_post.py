@@ -162,11 +162,12 @@ def main():
                 post.save()
 
         else:
-            pass
+            print(for_db)
+            exit(1)
 
 
 
 while True:
     main()
     logger.info('Sleep zzzzz')
-    time.sleep(5)
+    time.sleep(18)
