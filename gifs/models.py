@@ -67,3 +67,14 @@ class Gif(models.Model):
             return Gif.objects.get(pk=self.pk+1)
         except:
             return None
+
+
+class Order(models.Model):
+    order_name = models.TextField(blank=True)
+
+
+class InOrder(models.Model):
+    order = models.ForeignKey(Order)
+    gif = models.ForeignKey(Gif)
+    place_in_order = models.IntegerField(blank=True)
+    published = models.BooleanField(default=False)
