@@ -1,10 +1,10 @@
 from django.db import models
 
+
 class TagToPublish(models.Model):
     tag_to_publish = models.TextField()
     ru_tag = models.TextField(blank=True)
     eng_tag = models.TextField(blank=True)
-
 
     def __str__(self):
         return self.tag_to_publish
@@ -33,17 +33,6 @@ class Post(models.Model):
     def __str__(self):
         return self.post_url
 
-class LastPostTimestamp(models.Model):
-    timestamp = models.IntegerField(null=False)
-    tagged = models.ForeignKey(Tag)
-
-
-# class Tagged(models.Model):
-#     post = models.ForeignKey(Post)
-#     tag = models.ForeignKey(Tag)
-
-
-
 
 class Gif(models.Model):
     link = models.URLField(unique=True)
@@ -57,13 +46,12 @@ class Gif(models.Model):
             (1, 'To publish'),
             (2, 'Never Publish'),
             (0, 'Null')
-    ], default=0)
+            ], default=0)
 
     def image(self):
         return '<image src={} />'.format(self.link)
 
     image.allow_tags = True
-    # image.
 
     def __str__(self):
         return self.link
