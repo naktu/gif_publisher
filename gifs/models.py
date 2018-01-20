@@ -62,12 +62,6 @@ class Gif(models.Model):
             if tag_to_publish:
                 return tag_to_publish
 
-    def next(self):
-        try:
-            return Gif.objects.get(pk=self.pk+1)
-        except:
-            return None
-
 
 class Order(models.Model):
     order_name = models.TextField(blank=True)
