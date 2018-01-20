@@ -70,7 +70,10 @@ def parse_response(resp):
                 data['post_url'] = post.pop('post_url', None)
                 photos = post.pop('photos', None)
                 if photos:
-                    data['gif_links'] = [image['original_size']['url'] for image in photos if image['original_size']['url'].endswith('.gif') ]
+                    data['gif_links'] = []
+                    for image in photos:
+                        if image['original_size']['url'].endswith('.gif'):
+                            data['gif_links'].append(image['original_size']['url'])
                 else:
                     data['gif_links'] = None
                 for key in data:
@@ -78,7 +81,8 @@ def parse_response(resp):
                         logger.error('Some post data is empty: {}'.format(data))
                         logger.info('RAW Data: {}'.format(raw_post))
                 data['json'] = post
-                if data['gif_links']: result.append(data)
+                if data['gif_links']:
+                    result.append(data)
         return {
             'result': 'ok',
             'data': result
@@ -132,9 +136,7 @@ def main():
                             try:
                                 new_tag.save()
                                 logger.info("Added new tag: {}".format(tag_value))
-                                # print("It's new tag: {}".format(tag_value))
                             except:
-                                # print("It's tag in database: {}".format(tag_value))
                                 new_tag = Tag.objects.get(tag=tag_value.lower())
                             tags.append(new_tag)
 
@@ -152,9 +154,7 @@ def main():
                                 gif_object.tagged.add(i)
                 else:
                     logger.debug('Empty result I get {}'.format(resp))
-                    print(timestamp)
                     timestamp -= 300
-                    print(tag)
                     post = Post(
                         tumblr_post_id=00000000,
                         timestamp=timestamp,
