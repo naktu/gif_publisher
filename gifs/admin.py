@@ -8,13 +8,17 @@ from django.db import models
 class GifAdmin(admin.ModelAdmin):
     # fields = ['link', 'post', 'tagged', 'image', 'next']
     filter_horizontal = ('tagged',)
-    list_display = ('id','choices', 'image', 'tag_to_publish' )
-    list_filter = ['choices',]
+    list_display = ('id', 'choices', 'image', 'tag_to_publish', 'tags',)
+    list_filter = ['choices']
     readonly_fields = ('image',)
     list_editable = ['choices']
+    ordering = ('pk',)
+    list_per_page = 25
+
 
 
 admin.site.register(Gif, GifAdmin)
+
 
 class TagAdmin(admin.ModelAdmin):
     # fields = ['tag', 'tag_to_publish']
@@ -23,6 +27,7 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ('tag', 'tag_to_publish', 'active', 'not_to_publish', 'count')
     list_filter = ['active', 'not_to_publish', 'tag_to_publish']
     list_editable = ['tag_to_publish', 'active', 'not_to_publish']
+
     def get_queryset(self, request):
         qs = super(TagAdmin, self).get_queryset(request)
         qs = qs.annotate(models.Count('gif'))
@@ -33,16 +38,29 @@ class TagAdmin(admin.ModelAdmin):
 
     count.admin_order_field = 'gif__count'
 
+
 admin.site.register(Tag, TagAdmin)
 
+
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('post_url','timestamp')
+    list_display = ('post_url', 'timestamp')
+
 
 admin.site.register(Post, PostAdmin)
 
+
 class TagToPublishAdmin(admin.ModelAdmin):
-    list_display = ('id','tag_to_publish',)
+    list_display = ('id', 'tag_to_publish',)
     list_editable = ('tag_to_publish',)
 
 
-admin.site.register(TagToPublish,TagToPublishAdmin)
+admin.site.register(TagToPublish, TagToPublishAdmin)
+
+class InOrderAdmin(admin.ModelAdmin):
+    list_display = ('order','image', 'place_in_order', 'to_public')
+    list_editable = ['place_in_order', 'to_public']
+    readonly_fields = ('image',)
+    list_filter = ['order__order_name', 'to_public']
+
+admin.site.register(InOrder, InOrderAdmin)
+admin.site.register([Order])
