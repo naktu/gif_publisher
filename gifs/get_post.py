@@ -103,6 +103,7 @@ def main():
             logger.warning("Can't find any active tag")
         else:
             tag = random.choice(active_tags)
+            logger.info("Started for tag: {}".format(tag.tag))
             tag_tag = tag.tag
             posts = Post.objects.filter(tagged__tag=tag_tag)
             if posts:

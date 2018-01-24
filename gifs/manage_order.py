@@ -28,4 +28,4 @@ print(len(gif_set))
 
 gif_set =Gif.objects.filter(choices=1)
 print(len(gif_set))
-print(Gif.objects.count())
+print(Gif.objects.all().count())
