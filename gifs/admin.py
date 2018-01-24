@@ -5,17 +5,51 @@ from django.db import models
 # admin.site.register(Blog, Post, Tag_source, Media)
 
 
+from django.contrib.admin.filters import SimpleListFilter
+
+class NullFilterSpec(SimpleListFilter):
+    title = u''
+
+    parameter_name = u''
+
+    def lookups(self, request, model_admin):
+        return (
+            ('1', 'Null', ),
+            ('0', '!= Null', ),
+        )
+
+    def queryset(self, request, queryset):
+        kwargs = {
+        '%s'%self.parameter_name : None,
+        }
+        if self.value() == '0':
+            tags_to_publish = Tag.objects.filter(tag_to_publish__isnull=False)
+            return queryset.distinct().filter(tagged__in=tags_to_publish)
+
+        if self.value() == '1':
+            return queryset.exclude(**kwargs)
+        return queryset
+
+
+
+class StartNullFilterSpec(NullFilterSpec):
+    title = u'Started'
+    parameter_name = u'started'
+
 class GifAdmin(admin.ModelAdmin):
     # fields = ['link', 'post', 'tagged', 'image', 'next']
     filter_horizontal = ('tagged',)
     list_display = ('id', 'choices', 'image', 'tag_to_publish', 'tags',)
-    list_filter = ['choices']
+    list_filter = ['choices', StartNullFilterSpec]
     readonly_fields = ('image',)
     list_editable = ['choices']
     ordering = ('pk',)
     list_per_page = 25
 
-
+    # def queryset(self, request):
+    #     qs = super(GifAdmin, self).queryset(request)
+    #     qs = qs.order_by('image').distinct('image')
+    #     return qs
 
 admin.site.register(Gif, GifAdmin)
 
