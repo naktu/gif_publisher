@@ -17,17 +17,42 @@ from gifs.models import *
 ORDER = 'vk'
 
 order = Order.objects.get(order_name=ORDER)
-gifs_order = InOrder.objects.filter(order__exact=order)
-tags_to_publish = Tag.objects.filter(tag_to_publish__isnull=False)
+gifs_unordered = InOrder.objects.filter(order__exact=order).filter(place_in_order=None)
+gifs_order = InOrder.objects.filter(order__exact=order).exclude(place_in_order=None).order_by('place_in_order')[:5]
 
-gif_set = Gif.objects.filter(choices=1).filter(tagged__in=tags_to_publish).exclude(inorder__in=gifs_order).distinct()[:3000]
+tag = []
+for item in gifs_order:
+    tag.append(item.gif.tag_to_publish())
 
-print(gif_set)
+h = 10
+last_order = []
 
-for gif in gif_set:
-    in_order = InOrder(
-        order=order,
-        gif=gif
-    )
-    in_order.save()
+while True:
+    gifs_unordered = InOrder.objects.filter(order__exact=order).filter(place_in_order=None)
+    if gifs_unordered == last_order:
+        break
+    gifs_order = InOrder.objects.filter(order__exact=order).exclude(place_in_order=None).order_by('-place_in_order')[:5]
+
+    # gifs_last = InOrder.objects.filter(order__exact=order).exclude(place_in_order=None).order_by('place_in_order').last()
+    # print(gifs_last.place_in_order)
+    if gifs_unordered:
+        tag = []
+        for item in gifs_order:
+            tag.append(item.gif.tag_to_publish())
+        for item in gifs_unordered:
+
+            if item.gif.tag_to_publish() not in tag:
+                if gifs_order:
+                    item.place_in_order = 1 + gifs_order.first().place_in_order
+                else:
+                    item.place_in_order = 1
+                item.save()
+                break
+    else:
+        print('Done')
+        break
+    last_order = gifs_unordered[:]
+
+
+
 
