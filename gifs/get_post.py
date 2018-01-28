@@ -38,7 +38,7 @@ LOGGING = {
         'loggers': {
             '': {
                 'handlers': ['stream', 'file'],
-                'level': 'DEBUG'
+                'level': 'INFO'
             }
         }
 
