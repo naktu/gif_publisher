@@ -56,17 +56,17 @@ from gifs.models import *
 #             return tag_to_publish
 
 
-# tag = "drrr"
-# e = Tag.objects.get(tag=tag)
-# f = open(tag+'.html', 'w')
-# for i in e.gif_set.all():
-#     f.write('<img src="{}"/>'.format(i.link))
-# f.close()
+tag = "pale"
+e = Tag.objects.get(tag=tag)
+f = open(tag+'.html', 'w')
+for i in e.gif_set.all():
+    f.write('<img src="{}"/>'.format(i.link))
+f.close()
 # order = Order.objects.get(order_name='vk')
 # gif = Gif.objects.get(pk=4)
 # l = InOrder(order=order, gif=gif)
 # l.save()
-gif = Gif.objects.get(pk=1542)
-print(gif)
+# gif = Gif.objects.get(pk=1542)
+# print(gif)
 
 

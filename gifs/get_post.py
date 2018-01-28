@@ -117,59 +117,63 @@ def main():
             except Exception as e:
                 logger.error('{}'.format(e))
                 sys.exit(1)
-            for_db = parse_response(resp)
-            if for_db['result'] == 'ok':
-                errors_counter = 0
-                if for_db['data']:
-                    for row in for_db['data']:
+            if resp:
+                for_db = parse_response(resp)
+                if for_db['result'] == 'ok':
+                    errors_counter = 0
+                    if for_db['data']:
+                        for row in for_db['data']:
+                            post = Post(
+                                tumblr_post_id=row['tumblr_post_id'],
+                                timestamp=row['timestamp'],
+                                json=row['json'],
+                                tagged=tag,
+                                post_url=row['post_url']
+                            )
+                            post.save()
+
+                            tags = []
+                            for tag_value in row['tags']:
+                                new_tag = Tag(tag=tag_value.lower())
+                                try:
+                                    new_tag.save()
+                                    logger.info("Added new tag: {}".format(tag_value))
+                                except:
+                                    new_tag = Tag.objects.get(tag=tag_value.lower())
+                                tags.append(new_tag)
+
+                            for link in row['gif_links']:
+                                gif_object = Gif(
+                                    link = link,
+                                    post = post,
+                                )
+                                try:
+                                    gif_object.save()
+                                except:
+                                    logger.info("That's gif already in database: {}".format(link))
+                                    gif_object = Gif.objects.get(link=link)
+                                for i in tags:
+                                    gif_object.tagged.add(i)
+                    else:
+                        logger.debug('Empty result I get {}'.format(resp))
+                        timestamp -= 300
                         post = Post(
-                            tumblr_post_id=row['tumblr_post_id'],
-                            timestamp=row['timestamp'],
-                            json=row['json'],
+                            tumblr_post_id=00000000,
+                            timestamp=timestamp,
+                            json="",
                             tagged=tag,
-                            post_url=row['post_url']
+                            post_url='http://none.ru'
                         )
                         post.save()
 
-                        tags = []
-                        for tag_value in row['tags']:
-                            new_tag = Tag(tag=tag_value.lower())
-                            try:
-                                new_tag.save()
-                                logger.info("Added new tag: {}".format(tag_value))
-                            except:
-                                new_tag = Tag.objects.get(tag=tag_value.lower())
-                            tags.append(new_tag)
-
-                        for link in row['gif_links']:
-                            gif_object = Gif(
-                                link = link,
-                                post = post,
-                            )
-                            try:
-                                gif_object.save()
-                            except:
-                                logger.info("That's gif already in database: {}".format(link))
-                                gif_object = Gif.objects.get(link=link)
-                            for i in tags:
-                                gif_object.tagged.add(i)
                 else:
-                    logger.debug('Empty result I get {}'.format(resp))
-                    timestamp -= 300
-                    post = Post(
-                        tumblr_post_id=00000000,
-                        timestamp=timestamp,
-                        json="",
-                        tagged=tag,
-                        post_url='http://none.ru'
-                    )
-                    post.save()
-
+                    errors_counter += 1
+                    logger.error('Request: {}'.format(for_db))
+                    logger.info('Errors counter is: {}'.format(errors_counter))
             else:
-                errors_counter += 1
-                logger.error('Request: {}'.format(for_db))
-                logger.info('Errors counter is: {}'.format(errors_counter))
-
+                tag.active=False
+                tag.save()
+                logger.info('Tag {0} return empty response: {1}, and I disabled it!'.format(tag, resp))
         if errors_counter == django.conf.settings.EXIT_COUT_ERRORS:
             logger.error('Error counter is {}. Exiting'.format(errors_counter))
             sys.exit(2)
