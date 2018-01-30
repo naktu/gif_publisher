@@ -1,5 +1,8 @@
 import random
 from django.db import models
+from django.core.files import File
+import os
+import urllib.request
 
 
 class TagToPublish(models.Model):
@@ -42,6 +45,7 @@ class Gif(models.Model):
     tagged = models.ManyToManyField(Tag)
     to_publish = models.BooleanField(default=False)
     never_publish = models.BooleanField(default=False)
+    file = models.FileField(upload_to='/media/hdd1/images/gif_publisher/')
     choices = models.IntegerField(
         choices=[
             (1, 'To publish'),
@@ -74,6 +78,15 @@ class Gif(models.Model):
         return ''.join("<br>{}<br>".format(i.tag) for i in self.tagged.all())
 
     tags.allow_tags = True
+
+    def save_image(self):
+        if self.link and not self.file:
+            result = urllib.request.urlretrieve(self.link)
+            self.file.save(
+                os.path.basename(self.link),
+                File(open(result[0]))
+            )
+        self.save()
 
 
 class Order(models.Model):
