@@ -1,6 +1,7 @@
 import pytumblr
 import logging.config
 import os
+import sys
 import django
 import random
 import datetime
@@ -8,8 +9,13 @@ import sys
 import time
 
 
+prj_path = '/home/tutunak/Dropbox/prj/web/gif_publisher'
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gif_publisher.settings")
+sys.path.append(prj_path)
+os.chdir(prj_path)
 django.setup()
+
 
 from gifs.models import *
 
