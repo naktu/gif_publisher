@@ -45,7 +45,7 @@ class Gif(models.Model):
     tagged = models.ManyToManyField(Tag)
     to_publish = models.BooleanField(default=False)
     never_publish = models.BooleanField(default=False)
-    #file = models.FileField(upload_to='/media/hdd1/images/gif_publisher/')
+    file = models.TextField(blank=True, null=True)
     choices = models.IntegerField(
         choices=[
             (1, 'To publish'),
