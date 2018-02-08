@@ -13,6 +13,10 @@ class TagToPublish(models.Model):
     def __str__(self):
         return self.tag_to_publish
 
+class Location(models.Model):
+    storage = models.CharField(max_length=30)
+    store_path = models.TextField()
+
 
 class Tag(models.Model):
     tag = models.TextField(unique=True)
@@ -45,13 +49,14 @@ class Gif(models.Model):
     tagged = models.ManyToManyField(Tag)
     to_publish = models.BooleanField(default=False)
     never_publish = models.BooleanField(default=False)
-    file = models.TextField(blank=True, null=True)
+    # file = models.TextField(blank=True, null=True)
     choices = models.IntegerField(
         choices=[
             (1, 'To publish'),
             (2, 'Never Publish'),
             (0, 'Null')
             ], default=0)
+    file_store = models.ManyToManyField(Location)
 
     def image(self):
         return '<image src={} />'.format(self.link)
@@ -109,3 +114,5 @@ class InOrder(models.Model):
         return '<image src={} />'.format(self.gif)
 
     image.allow_tags = True
+
+

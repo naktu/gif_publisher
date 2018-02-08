@@ -39,7 +39,7 @@ class StartNullFilterSpec(NullFilterSpec):
 class GifAdmin(admin.ModelAdmin):
     # fields = ['link', 'post', 'tagged', 'image', 'next']
     filter_horizontal = ('tagged',)
-    list_display = ('id', 'choices', 'image', 'tag_to_publish', 'tags', 'file')
+    list_display = ('id', 'choices', 'image', 'tag_to_publish', 'tags')
     list_filter = ['choices', StartNullFilterSpec]
     readonly_fields = ('image',)
     list_editable = ['choices']
