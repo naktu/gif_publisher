@@ -62,13 +62,11 @@ logger = logging.getLogger(__name__)
 
 
 def for_download():
-    i = 0
     while True:
         tags_to_publish = Tag.objects.filter(tag_to_publish__isnull=False)
-        gif_set = Gif.objects.filter(choices=1).filter(tagged__in=tags_to_publish).exclude(file__isnull=False).distinct()[i:i+1]
+        gif_set = Gif.objects.filter(choices=1).filter(tagged__in=tags_to_publish).exclude(file__isnull=False).distinct().first()
         if gif_set:
-            yield gif_set[0]
-            i += 1
+            yield gif_set
         else:
             yield None
 
