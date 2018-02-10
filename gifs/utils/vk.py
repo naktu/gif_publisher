@@ -3,7 +3,7 @@ import requests
 
 
 class Vk:
-    def __init__(self, access_token, v=5.63):
+    def __init__(self, access_token, v=5.70):
         self.params = {
             'access_token': access_token,
             'v': v
@@ -61,8 +61,8 @@ class Group:
 
 
 class UploadFile:
-    def __init__(self, type, file, access_token, owner_id):
-        self.type = type
+    def __init__(self, _type, file, access_token, owner_id):
+        self.type = _type
         self.file = file
         self.vk = Vk(access_token)
         self.id = owner_id
@@ -86,7 +86,7 @@ class UploadFile:
                 if self.response:
                     owner_id = self.response[0]['owner_id']
                     _id = self.response[0]['id']
-                    return 'doc' + str(owner_id) + str(_id)
+                    return 'doc' + str(owner_id) + '_' + str(_id)
     def upload(self):
         if self.type == 'doc':
             return self.upload_doc()
