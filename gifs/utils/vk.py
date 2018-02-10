@@ -59,14 +59,23 @@ class Group:
                 self.last_postponed = self.response.get('items', None)
             return self.last_postponed
 
-    def upload_doc(self, file):
+
+class UploadFile:
+    def __init__(self, type, file, access_token, owner_id):
+        self.type = type
+        self.file = file
+        self.vk = Vk(access_token)
+        self.id = owner_id
+
+    def upload_doc(self):
         method = 'docs.getUploadServer'
         self.result = self.vk.get(method,
                                   owner_id=self.id)
         self.response = self.result.get('response', None)
         if self.response:
             upload_url = self.response.get('upload_url', None)
-            file_up = {'file': (os.path.basename(file), open(file, 'rb'))}
+            file_name = os.path.basename(self.file)
+            file_up = {'file': (file_name, open(self.file, 'rb'))}
             uploaded = requests.post(upload_url, files=file_up)
             if uploaded.ok:
                 method = 'docs.save'
@@ -78,3 +87,6 @@ class Group:
                     owner_id = self.response[0]['owner_id']
                     _id = self.response[0]['id']
                     return 'doc' + str(owner_id) + str(_id)
+    def upload(self):
+        if self.type == 'doc':
+            return self.upload_doc()

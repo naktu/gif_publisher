@@ -56,7 +56,7 @@ from gifs.models import *
 #             return tag_to_publish
 
 
-tag = "erased"
+tag = "rin"
 e = Tag.objects.get(tag=tag)
 f = open(tag+'.html', 'w')
 for i in e.gif_set.all():
