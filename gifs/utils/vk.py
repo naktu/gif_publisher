@@ -13,7 +13,10 @@ class Vk:
     def get(self, method, **kwargs):
         url = self.main_url + method
         self.params.update(kwargs)
-        resp = requests.get(url, params=self.params)
+        try:
+            resp = requests.get(url, params=self.params)
+        except Exception as e:
+            return {'error': {'exception': e}}
         if resp.ok:
             return resp.json()
         else:

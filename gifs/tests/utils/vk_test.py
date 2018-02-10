@@ -14,8 +14,6 @@ class TestVK(unittest.TestCase):
                                       owner_id=-96920344,
                                       count=1,
                                       )
-        self.assertIsInstance(result, dict)
-        self.assertSetEqual(set(result.keys()), {'response'})
         item = result['response']['items'][0]
         self.assertIsInstance(item, dict)
 
@@ -25,8 +23,6 @@ class TestVK(unittest.TestCase):
                                       owner_id=-96920344,
                                       count=1,
                                       )
-        self.assertIsInstance(result, dict)
-        self.assertSetEqual(set(result.keys()), {'error'})
         item = result['error']
         self.assertSetEqual(set(item.keys()),
                             {'status_code', 'reason'})
@@ -34,14 +30,23 @@ class TestVK(unittest.TestCase):
     def test_no_valid_method(self):
         result = self.vk_instance.get(method='wrong.method',
                                       owner_id=-96920344)
-        self.assertIsInstance(result, dict)
-        self.assertSetEqual(set(result.keys()), {'error'})
         item = result['error']
         self.assertIsInstance(item, dict)
+
+    def test_exception(self):
+        self.vk_instance.main_url = 'http://vkdfjggscbbcxomdghls.com/method/'
+        result = self.vk_instance.get(method='123')
+        item = result['error']
+        self.assertSetEqual(set(item.keys()), {'exception'})
 
     def tearDown(self):
         # Sleep after each test because vk can ban us
         time.sleep(10)
+
+
+class TestGroup(unittest.TestCase):
+    def setUp(self):
+        pass
 
 
 if __name__ == '__main__':
