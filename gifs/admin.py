@@ -84,8 +84,8 @@ admin.site.register(Post, PostAdmin)
 
 
 class TagToPublishAdmin(admin.ModelAdmin):
-    list_display = ('id', 'tag_to_publish',)
-    list_editable = ('tag_to_publish',)
+    list_display = ('id', 'tag_to_publish','ru_tag', 'eng_tag')
+    list_editable = ('tag_to_publish','ru_tag', 'eng_tag')
 
 
 admin.site.register(TagToPublish, TagToPublishAdmin)

@@ -64,7 +64,9 @@ logger = logging.getLogger(__name__)
 def for_download():
     while True:
         tags_to_publish = Tag.objects.filter(tag_to_publish__isnull=False)
-        gif_set = Gif.objects.filter(choices=1).filter(tagged__in=tags_to_publish).exclude(file__isnull=False).distinct().first()
+        downloaded = Location.objects.filter(storage='file').filter(storage__isnull=False)
+        gif_set = Gif.objects.filter(choices=1).filter(tagged__in=tags_to_publish).exclude(file_store__in=downloaded).distinct().first()
+        print(gif_set)
         if gif_set:
             yield gif_set
         else:
@@ -73,11 +75,13 @@ def for_download():
 
 def main():
     max_links_errors = MAX_LINKS_ERROR
-    gifs = for_download()
+    # gifs = for_download()
     while max_links_errors:
-        # tags_to_publish = Tag.objects.filter(tag_to_publish__isnull=False)
-        # gif_set = Gif.objects.filter(choices=1).filter(tagged__in=tags_to_publish).exclude(file__isnull=False)[0:1]
-        gif = gifs.__next__()
+        tags_to_publish = Tag.objects.filter(tag_to_publish__isnull=False)
+        downloaded = Location.objects.filter(storage='file').filter(storage__isnull=False)
+        gif = Gif.objects.filter(choices=1).filter(tagged__in=tags_to_publish).exclude(
+            file_store__in=downloaded).distinct().first()
+        print(gif)
         max_retry_link = MAX_RETRY_LINK
         while max_retry_link:
             logger.info('Starting nex image')
@@ -107,8 +111,9 @@ def main():
             print(file_name)
             with open(file_name, 'wb') as f:
                 f.write(r.content)
-            gif.file=file_name
-            gif.save()
+            location = Location(storage='file', store_path=file_name)
+            location.save()
+            gif.file_store.add(location)
             logger.info('For gif id={0} save file image {1}'.format(gif.id, file_name))
             break
 
