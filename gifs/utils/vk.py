@@ -28,15 +28,22 @@ class Vk:
 
 
 class Group:
+    """
+    Class work working with group in vk
+    You need group id - owner_id and access_token
+    """
     def __init__(self, owner_id, access_token):
         self.id = owner_id
         self.vk = Vk(access_token)
         self.response = None
         self.result = None
         self.count = None
-        self.last_postponed = None
+        self.last_postponed_post = None
 
-    def count_order_post(self):
+    def order_size(self):
+        """
+        :return: postponed order in vk group
+        """
         method = 'wall.get'
         self.result = self.vk.get(method,
                                   count=1,
@@ -48,9 +55,12 @@ class Group:
             self.count = self.response.get('count', None)
         return self.count
 
-    def last_post_in_order(self):
+    def last_postponed(self):
+        """
+        :return: last postponed post from vk api
+        """
         method = 'wall.get'
-        count = self.count_order_post()
+        count = self.order_size()
         if count:
             self.result = self.vk.get(method,
                                       count=1,
@@ -59,8 +69,8 @@ class Group:
                                       owner_id=self.id)
             self.response = self.result.get('response', None)
             if self.response:
-                self.last_postponed = self.response.get('items', None)
-            return self.last_postponed
+                self.last_postponed_post = self.response.get('items', None)
+            return self.last_postponed_post
 
 
 class UploadFile:
