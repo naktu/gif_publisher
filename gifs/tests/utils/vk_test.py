@@ -46,7 +46,23 @@ class TestVK(unittest.TestCase):
 
 class TestGroup(unittest.TestCase):
     def setUp(self):
-        pass
+        # In this group last post in 1 december 2018 01:00
+        self.gr = vk.Group(-103991042, API)
+
+    def test_order_size_one_post(self):
+        self.assertEqual(self.gr.order_size(), 1)
+
+    def test_last_postponed_one_post(self):
+        result = self.gr.last_postponed()
+        self.assertIsInstance(result[0], dict)
+
+    def test_last_postponed_no_posts_in_order(self):
+        self.gr.id = -101004674
+        self.assertIs(self.gr.last_postponed(), None)
+
+    def tearDown(self):
+        # Sleep after each test because vk can ban us
+        time.sleep(10)
 
 
 if __name__ == '__main__':
