@@ -1,5 +1,8 @@
 import unittest
 import time
+import os
+import requests
+
 
 from gifs.utils import vk
 from tests.utils.secret import API
@@ -63,6 +66,30 @@ class TestGroup(unittest.TestCase):
     def tearDown(self):
         # Sleep after each test because vk can ban us
         time.sleep(10)
+
+
+class TestUploadFile(unittest.TestCase):
+    def setUp(self):
+        file = 'VPl8itumblr_oz754hAKrZ1ukwfs9o1_1280.gif'
+        test_path = os.path.dirname(os.path.abspath(__file__))
+        upload_file = os.path.join(test_path, 'files', file)
+        self.uf = vk.UploadFile(_type='doc',
+                                file=upload_file,
+                                access_token=API,
+                                owner_id=-148142803
+                                )
+        with open(upload_file, 'rb') as f:
+            self.binary_file = f.read()
+
+    def test_upload_doc(self):
+        file = self.uf.upload_doc()
+        vk_instance = vk.Vk(API)
+        result = vk_instance.get(method='docs.getById',
+                                 docs=file[3:]
+                                 )
+        file_to_down = result['response'][0]['url']
+        download = requests.get(file_to_down).content
+        self.assertEqual(self.binary_file, download)
 
 
 if __name__ == '__main__':

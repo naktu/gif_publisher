@@ -100,6 +100,7 @@ class UploadFile:
                     owner_id = self.response[0]['owner_id']
                     _id = self.response[0]['id']
                     return 'doc' + str(owner_id) + '_' + str(_id)
+
     def upload(self):
         if self.type == 'doc':
             return self.upload_doc()
