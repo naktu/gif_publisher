@@ -79,6 +79,7 @@ class UploadFile:
         self.file = file
         self.vk = Vk(access_token)
         self.id = owner_id
+        self.type = None
 
     def upload_doc(self):
         method = 'docs.getUploadServer'
