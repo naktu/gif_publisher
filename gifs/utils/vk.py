@@ -72,6 +72,15 @@ class Group:
                 self.last_postponed_post = self.response.get('items', None)
             return self.last_postponed_post
 
+    def post(self, **kwargs):
+        """
+        :return: post
+        """
+        method = 'wall.post'
+        kwargs.setdefault('owner_id', self.id)
+        self.result = self.vk.get(method=method, **kwargs)
+        return self.result
+
 
 class UploadFile:
     def __init__(self, _type, file, access_token, owner_id):
@@ -80,6 +89,8 @@ class UploadFile:
         self.vk = Vk(access_token)
         self.id = owner_id
         self.type = None
+        self.response = None
+        self.result = None
 
     def upload_doc(self):
         method = 'docs.getUploadServer'
