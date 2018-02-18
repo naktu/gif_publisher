@@ -91,8 +91,8 @@ class TagToPublishAdmin(admin.ModelAdmin):
 admin.site.register(TagToPublish, TagToPublishAdmin)
 
 class InOrderAdmin(admin.ModelAdmin):
-    list_display = ('order','image', 'place_in_order', 'to_public')
-    list_editable = ['place_in_order', 'to_public']
+    list_display = ('order','image', 'place_in_order', 'to_public', 'published')
+    list_editable = ['place_in_order', 'to_public', 'published']
     readonly_fields = ('image',)
     list_filter = ['order__order_name', 'to_public']
 
