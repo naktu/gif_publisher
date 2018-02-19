@@ -3,7 +3,6 @@ import time
 import django
 import os
 import sys
-from gifs.utils import vk
 
 
 
@@ -15,6 +14,7 @@ os.chdir(prj_path)
 django.setup()
 
 from gifs import models
+from gifs.utils import vk
 
 import secret
 def main():
@@ -53,6 +53,7 @@ def main():
             gif.file_store.add(vk_loc)
             to_pub_attach = result
         time.sleep(1)
+    print(gif.id)
     pub_tag = models.TagToPublish.objects.filter(tag__gif=gif)[0]
     tags =set()
     tags.add(pub_tag.tag_to_publish)

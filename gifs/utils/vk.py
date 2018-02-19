@@ -101,6 +101,7 @@ class UploadFile:
             upload_url = self.response.get('upload_url', None)
             file_name = os.path.basename(self.file)
             file_up = {'file': (file_name, open(self.file, 'rb'))}
+            print(self.file)
             uploaded = requests.post(upload_url, files=file_up)
             if uploaded.ok:
                 method = 'docs.save'
