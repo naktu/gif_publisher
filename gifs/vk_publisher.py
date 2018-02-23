@@ -20,11 +20,13 @@ import secret
 def main():
     anime_gif = vk.Group(-96920344, secret.API)
     order = anime_gif.order_size()
-    if order < 150:
-        time.sleep(1)
-        last = anime_gif.last_postponed()
-        if last:
-            last_date = last[0]['date']
+    if not (order < 150):
+        return
+    time.sleep(1)
+    last = anime_gif.last_postponed()
+    if not last:
+        return
+    last_date = last[0]['date']
     order = models.Order.objects.get(order_name__exact='vk')
     in_order = models.InOrder.objects.filter(
         order__exact=order
