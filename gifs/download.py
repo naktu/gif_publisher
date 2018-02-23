@@ -5,6 +5,7 @@ import sys
 import time
 import requests
 import string
+import datetime
 
 
 prj_path = '/home/tutunak/Dropbox/prj/web/gif_publisher'
@@ -106,8 +107,11 @@ def main():
                 continue
 
             prefix = ''.join(random.choice(PREF_SYMBOLS) for _ in range(LEN_PREF_FILENAME))
+            folder = datetime.datetime.now().strftime('%Y%m')
+            if not os.path.exists(folder):
+                os.makedirs(folder)
             file_name = prefix + os.path.basename(gif.link)
-            file_name = os.path.join(PATH, file_name)
+            file_name = os.path.join(folder, file_name)
             print(file_name)
             with open(file_name, 'wb') as f:
                 f.write(r.content)
@@ -124,5 +128,6 @@ def main():
 
 
 if __name__ == '__main__':
+    os.chdir(PATH)
     main()
 
