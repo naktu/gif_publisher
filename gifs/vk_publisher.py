@@ -21,6 +21,7 @@ def main():
     anime_gif = vk.Group(-96920344, secret.API)
     order = anime_gif.order_size()
     if not (order < 150):
+        time.sleep(1800)
         return
     time.sleep(1)
     last = anime_gif.last_postponed()
