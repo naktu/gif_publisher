@@ -122,7 +122,7 @@ def main():
                 resp = client.tagged(tag, before=timestamp)
             except Exception as e:
                 logger.error('{}'.format(e))
-                sys.exit(1)
+                continue
             if resp:
                 for_db = parse_response(resp)
                 if for_db['result'] == 'ok':

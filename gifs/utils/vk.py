@@ -18,6 +18,7 @@ class Vk:
         except Exception as e:
             return {'error': {'exception': e}}
         if resp.ok:
+            print(resp.content)
             return resp.json()
         else:
             return {'error': {
@@ -103,12 +104,15 @@ class UploadFile:
             file_up = {'file': (file_name, open(self.file, 'rb'))}
             print(self.file)
             uploaded = requests.post(upload_url, files=file_up)
+            print(uploaded)
             if uploaded.ok:
+                print(123)
                 method = 'docs.save'
                 self.result = self.vk.get(method,
                                           owner_id=self.id,
                                           file=uploaded.json()['file'])
                 self.response = self.result.get('response', None)
+                print(self.response)
                 if self.response:
                     owner_id = self.response[0]['owner_id']
                     _id = self.response[0]['id']

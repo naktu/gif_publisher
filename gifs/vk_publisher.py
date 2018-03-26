@@ -85,4 +85,4 @@ if __name__ == '__main__':
     while True:
         main()
         print('GO to sleep 1800 seconds')
-        time.sleep(600)
+        time.sleep(1200)

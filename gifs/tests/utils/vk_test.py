@@ -87,6 +87,7 @@ class TestUploadFile(unittest.TestCase):
         result = vk_instance.get(method='docs.getById',
                                  docs=file[3:]
                                  )
+        print(file)
         file_to_down = result['response'][0]['url']
         download = requests.get(file_to_down).content
         self.assertEqual(self.binary_file, download)
