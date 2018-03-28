@@ -99,7 +99,7 @@ class UploadFile:
                                   owner_id=self.id)
         self.response = self.result.get('response', None)
         if self.response:
-            upload_url = self.response.get('upload_url', None)
+            upload_url = self.response['upload_url']
             file_name = os.path.basename(self.file)
             file_up = {'file': (file_name, open(self.file, 'rb'))}
             print(self.file)
