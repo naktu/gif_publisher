@@ -69,6 +69,8 @@ class TestGroup(unittest.TestCase):
 
 
 class TestUploadFile(unittest.TestCase):
+    """b'{"error":{"error_code":14,"error_msg":"Captcha needed","request_params":[{"key":"oauth","value":"1"},{"key":"method","value":"docs.save"},{"key":"v","value":"5.7"},{"key":"owner_id","value":"-96920344"},{"key":"file","value":"196976591|0|0|834701|62df765718|gif|1273177|Ya9vttumblr_p1u99qA2x31qztgoio3_540.gif|05671f1ee2b0245bb1e2a4476477eded|cbae1e3d0c7a1163ff68e6c37911278a|m_62df765718|32|m:130x73,s:100x56,x:604x337,o:540x301|eyJkaXNrIjoiNyJ9"}],"captcha_sid":"989627655576","captcha_img":"https:\\/\\/api.vk.com\\/captcha.php?sid=989627655576&s=1"}}'"""
+
     def setUp(self):
         file = 'VPl8itumblr_oz754hAKrZ1ukwfs9o1_1280.gif'
         test_path = os.path.dirname(os.path.abspath(__file__))
