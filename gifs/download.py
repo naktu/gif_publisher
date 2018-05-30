@@ -80,9 +80,12 @@ def main():
     while max_links_errors:
         tags_to_publish = Tag.objects.filter(tag_to_publish__isnull=False)
         downloaded = Location.objects.filter(storage='file').filter(storage__isnull=False)
-        gif = Gif.objects.filter(choices=1).filter(tagged__in=tags_to_publish).exclude(
+        # gif = Gif.objects.filter(choices=1).filter(tagged__in=tags_to_publish).exclude(
+        #     file_store__in=downloaded).distinct().first()
+        gif = Gif.objects.filter(tagged__in=tags_to_publish).exclude(
             file_store__in=downloaded).distinct().first()
         print(gif)
+        print('123')
         max_retry_link = MAX_RETRY_LINK
         while max_retry_link:
             logger.info('Starting nex image')
@@ -100,14 +103,14 @@ def main():
                 max_retry_link -= 1
                 continue
 
-
-            if not r.content.endswith(b'\x00;'):        # every gif object should have end like this
+            if not (r.content.endswith(b'\x00;') or r.content.endswith(b'\x00')):        # every gif object should
+                # have end like this
                 logger.error('Not correct gif {}'.format(gif.link))
                 max_retry_link -= 1
                 continue
 
             prefix = ''.join(random.choice(PREF_SYMBOLS) for _ in range(LEN_PREF_FILENAME))
-            folder = datetime.datetime.now().strftime('%Y%m')
+            folder = datetime.datetime.now().strftime('%Y%m%d')
             if not os.path.exists(folder):
                 os.makedirs(folder)
             file_name = prefix + os.path.basename(gif.link)
