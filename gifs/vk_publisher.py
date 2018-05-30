@@ -5,7 +5,7 @@ import os
 import sys
 
 
-
+PATH = '/media/hdd1/images/gif_publisher'
 prj_path = '/home/tutunak/Dropbox/prj/web/gif_publisher'
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gif_publisher.settings")
@@ -43,7 +43,7 @@ def main():
         if l.storage == 'vk':
             to_pub_attach = l.store_path
         elif l.storage == 'file':
-            file_pub = l.store_path
+            file_pub = os.path.join(PATH, l.store_path)
     if not to_pub_attach:
         gif_upload = vk.UploadFile('doc',
                                    file_pub,
@@ -85,4 +85,4 @@ if __name__ == '__main__':
     while True:
         main()
         print('GO to sleep 1800 seconds')
-        time.sleep(1200)
+        time.sleep(600)
